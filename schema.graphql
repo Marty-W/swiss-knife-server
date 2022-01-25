@@ -2,14 +2,63 @@
 ### Do not make changes to this file directly
 
 
-type Pomo {
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
+
+type Mutation {
+  CreateNewTask(title: String!): [Task]
+  signin(email: String!, password: String!): AuthPayload
+  signup(email: String!, password: String!): AuthPayload
+}
+
+type PomodoroSession {
   actualDuration: Int!
   assumedDuration: Int!
-  endTime: Int
-  id: ID!
-  startTime: Int!
+
+  """Id of the user that created the session"""
+  byUserId: String!
+
+  """When the session should end,  in ISO format"""
+  endTime: DateTime
+
+  """Id of the pomodoro session"""
+  id: String!
+
+  """When the pomodoro started, in ISO format"""
+  startTime: DateTime!
 }
 
 type Query {
-  ok: Boolean!
+  user(userId: String!): User
+}
+
+type Task {
+  """Id of the User that created the task"""
+  byUserId: String!
+
+  """True if the task has been completed"""
+  completed: Boolean!
+
+  """When the task was created, in ISO format"""
+  createdAt: DateTime!
+
+  """User that created the task"""
+  createdBy: User
+
+  """Text of the task"""
+  title: String!
+}
+
+type User {
+  email: String!
+  id: String!
+  password: String!
+  tasks: [Task]
 }
