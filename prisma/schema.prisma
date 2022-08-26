@@ -17,7 +17,7 @@ datasource db {
 model Task {
   id String @id @default(uuid())
   title String
-  dueOn DateTime @default(now())
+  createdOn DateTime @default(now())
   completed Boolean @default(false)
   tags Tag[]
   user User @relation(fields: [userId], references: [id])
