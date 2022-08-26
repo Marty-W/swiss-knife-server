@@ -5,32 +5,73 @@ import {
   objectType,
   queryField,
   stringArg,
-} from "nexus"
+} from 'nexus'
 
-export const Task = objectType({
-  name: "Task",
+import SchemaBuilder from '@pothos/core'
+
+/*
+ QUERIES
+ [ ] 1. Get all tasks (without date restriction)
+ [ ] 2. Get all tasks for today 
+ [ ] 3. Get all overdue tasks
+ [ ] 4. Get all tasks for a specific tag 
+
+ MUTATIONS
+ [ ] 1. Change task title
+ [ ] 2. Delete task
+ [ ] 3. Add tags to task
+ [ ] 4. Remove tags from task
+ [ ] 5. Change task date
+ [ ] 6. Remove tag if there are no tasks with it
+   
+
+ MISC 
+ [x] create TAG object type 
+  - title
+  - id
+ [ ] migrate to Pothos
+   
+
+ NOTES
+ - filtrovani podle tagu si nech na konec, bude pouzito skoro pri kazde mutaci/query
+ - Nexus je uz trochu obsolete, jdu to premigrovat cely do Pothos Graphql (plugins vypadaji dobre a usnadni mi praci)
+
+*/
+
+// export const Task = objectType({
+//   name: 'Task',
+//   definition(t) {
+//     t.nonNull.string('id', { description: 'ID of the task' })
+//     t.nonNull.string('title', { description: 'Text of the task' })
+//     t.nonNull.date('createdOn', {
+//       description: 'When the task is due, in ISO format.',
+//     })
+//     t.nonNull.boolean('completed', {
+//       description: 'True if the task has been completed',
+//     })
+//     t.list.field('tags', {
+//       type: 'Tag',
+//     })
+//     t.field('createdBy', {
+//       type: 'User',
+//       description: 'User that created the task',
+//     })
+//     t.nonNull.string('byUserId', {
+//       description: 'Id of the User that created the task',
+//     })
+//   },
+// })
+
+export const Tag = objectType({
+  name: 'Tag',
   definition(t) {
-    t.nonNull.string("id", { description: "ID of the task" })
-    t.nonNull.string("title", { description: "Text of the task" })
-    t.nonNull.boolean("completed", {
-      description: "True if the task has been completed",
-    })
-    t.list.nonNull.string("tags", { description: "Tags of the task" })
-    t.nonNull.date("dueOn", {
-      description: "When the task is due, in ISO format.",
-    })
-    t.field("createdBy", {
-      type: "User",
-      description: "User that created the task",
-    })
-    t.nonNull.string("byUserId", {
-      description: "Id of the User that created the task",
-    })
+    t.nonNull.string('id')
+    t.nonNull.string('title')
   },
 })
 
-export const createTask = mutationField("createTask", {
-  type: "Task",
+export const createTask = mutationField('createTask', {
+  type: 'Task',
   args: {
     title: nonNull(stringArg()),
     tags: list(nonNull(stringArg())),
@@ -44,7 +85,7 @@ export const createTask = mutationField("createTask", {
     const newTask = await prisma.task.create({
       data: {
         title: title,
-        byUser: { connect: { id: userId } },
+        user: { connect: { id: userId } },
       },
     })
 
@@ -52,8 +93,8 @@ export const createTask = mutationField("createTask", {
   },
 })
 
-export const markTaskDone = mutationField("markTaskDone", {
-  type: "Task",
+export const markTaskDone = mutationField('markTaskDone', {
+  type: 'Task',
   args: {
     taskId: nonNull(stringArg()),
   },
@@ -71,8 +112,8 @@ export const markTaskDone = mutationField("markTaskDone", {
   },
 })
 
-export const undoTask = mutationField("undoTask", {
-  type: "Task",
+export const undoTask = mutationField('undoTask', {
+  type: 'Task',
   args: {
     taskId: nonNull(stringArg()),
   },
@@ -90,8 +131,8 @@ export const undoTask = mutationField("undoTask", {
   },
 })
 
-export const changeTaskTitle = mutationField("changeTaskTitle", {
-  type: "Task",
+export const changeTaskTitle = mutationField('changeTaskTitle', {
+  type: 'Task',
   args: {
     taskId: nonNull(stringArg()),
     newTitle: nonNull(stringArg()),
@@ -161,8 +202,8 @@ export const changeTaskTitle = mutationField("changeTaskTitle", {
 //   },
 // })
 
-export const allTasks = queryField("allTasks", {
-  type: list(nonNull("Task")),
+export const allTasks = queryField('allTasks', {
+  type: list(nonNull('Task')),
   resolve: async (_, __, { prisma, userId }) => {
     return await prisma.user.findUnique({ where: { id: userId } }).tasks()
   },

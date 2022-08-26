@@ -43,6 +43,11 @@ type Query {
   user(userId: String!): User
 }
 
+type Tag {
+  id: String!
+  title: String!
+}
+
 type Task {
   """Id of the User that created the task"""
   byUserId: String!
@@ -54,13 +59,11 @@ type Task {
   createdBy: User
 
   """When the task is due, in ISO format."""
-  dueOn: DateTime!
+  createdOn: DateTime!
 
   """ID of the task"""
   id: String!
-
-  """Tags of the task"""
-  tags: [String!]
+  tags: [Tag]
 
   """Text of the task"""
   title: String!

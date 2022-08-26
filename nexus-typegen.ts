@@ -58,13 +58,17 @@ export interface NexusGenObjects {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: {};
+  Tag: { // root type
+    id: string; // String!
+    title: string; // String!
+  }
   Task: { // root type
     byUserId: string; // String!
     completed: boolean; // Boolean!
     createdBy?: NexusGenRootTypes['User'] | null; // User
-    dueOn: NexusGenScalars['DateTime']; // DateTime!
+    createdOn: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
-    tags?: string[] | null; // [String!]
+    tags?: Array<NexusGenRootTypes['Tag'] | null> | null; // [Tag]
     title: string; // String!
   }
   User: { // root type
@@ -109,13 +113,17 @@ export interface NexusGenFieldTypes {
     allTasks: NexusGenRootTypes['Task'][] | null; // [Task!]
     user: NexusGenRootTypes['User'] | null; // User
   }
+  Tag: { // field return type
+    id: string; // String!
+    title: string; // String!
+  }
   Task: { // field return type
     byUserId: string; // String!
     completed: boolean; // Boolean!
     createdBy: NexusGenRootTypes['User'] | null; // User
-    dueOn: NexusGenScalars['DateTime']; // DateTime!
+    createdOn: NexusGenScalars['DateTime']; // DateTime!
     id: string; // String!
-    tags: string[] | null; // [String!]
+    tags: Array<NexusGenRootTypes['Tag'] | null> | null; // [Tag]
     title: string; // String!
   }
   User: { // field return type
@@ -152,13 +160,17 @@ export interface NexusGenFieldTypeNames {
     allTasks: 'Task'
     user: 'User'
   }
+  Tag: { // field return type name
+    id: 'String'
+    title: 'String'
+  }
   Task: { // field return type name
     byUserId: 'String'
     completed: 'Boolean'
     createdBy: 'User'
-    dueOn: 'DateTime'
+    createdOn: 'DateTime'
     id: 'String'
-    tags: 'String'
+    tags: 'Tag'
     title: 'String'
   }
   User: { // field return type name
