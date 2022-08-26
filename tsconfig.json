@@ -1,17 +1,18 @@
 {
-	"compilerOptions": {
-		"target": "ES2018",
-		"module": "CommonJS",
-		"lib": ["ESNext"],
-		"strict": true,
-		"rootDir": ".",
-		"outDir": "dist",
-		"sourceMap": true,
-		"esModuleInterop": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
-	},
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "CommonJS",
+    "lib": ["ESNext"],
+    "strict": true,
+    "rootDir": ".",
+    "outDir": "dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true
+  },
+  "exclude": ["node_modules"]
 }

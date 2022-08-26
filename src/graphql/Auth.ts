@@ -1,26 +1,27 @@
-import 'dotenv/config';
+import "dotenv/config"
 
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
-import { mutationField, nonNull, objectType, stringArg } from 'nexus';
+import * as bcrypt from "bcryptjs"
+import * as jwt from "jsonwebtoken"
+import { mutationField, nonNull, objectType, stringArg } from "nexus"
 
 export const AuthPayload = objectType({
-  name: 'AuthPayload',
+  name: "AuthPayload",
   definition(t) {
-    t.nonNull.string('token'),
-      t.nonNull.field('user', {
-        type: 'User',
+    t.nonNull.string("token"),
+      t.nonNull.field("user", {
+        type: "User",
       })
   },
 })
 
-export const SignUpMutation = mutationField('signup', {
+export const SignUpMutation = mutationField("signup", {
   type: AuthPayload,
   args: {
     email: nonNull(stringArg()),
     password: nonNull(stringArg()),
   },
   async resolve(_, { email, password }, { prisma }) {
+    console.log(email, password)
     const hashPass = await bcrypt.hash(password, 10)
 
     try {
@@ -38,12 +39,13 @@ export const SignUpMutation = mutationField('signup', {
         user,
       }
     } catch (e) {
-      throw new Error(e.code)
+      //TODO add error typings
+      throw new Error(e)
     }
   },
 })
 
-export const SignInMutation = mutationField('signin', {
+export const SignInMutation = mutationField("signin", {
   type: AuthPayload,
   args: {
     email: nonNull(stringArg()),
@@ -57,13 +59,13 @@ export const SignInMutation = mutationField('signin', {
     })
 
     if (!user) {
-      throw new Error('No such user found! ')
+      throw new Error("No such user found! ")
     }
 
-    const valid = bcrypt.compare(password, user.password)
+    const valid = await bcrypt.compare(password, user.password)
 
     if (!valid) {
-      throw new Error('Incorrect password!')
+      throw new Error("Incorrect password!")
     }
 
     const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET!)

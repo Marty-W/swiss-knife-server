@@ -61,8 +61,10 @@ export interface NexusGenObjects {
   Task: { // root type
     byUserId: string; // String!
     completed: boolean; // Boolean!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
     createdBy?: NexusGenRootTypes['User'] | null; // User
+    dueOn: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // String!
+    tags?: string[] | null; // [String!]
     title: string; // String!
   }
   User: { // root type
@@ -88,9 +90,12 @@ export interface NexusGenFieldTypes {
     user: NexusGenRootTypes['User']; // User!
   }
   Mutation: { // field return type
-    CreateNewTask: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
+    changeTaskTitle: NexusGenRootTypes['Task'] | null; // Task
+    createTask: NexusGenRootTypes['Task'] | null; // Task
+    markTaskDone: NexusGenRootTypes['Task'] | null; // Task
     signin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     signup: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
+    undoTask: NexusGenRootTypes['Task'] | null; // Task
   }
   PomodoroSession: { // field return type
     actualDuration: number; // Int!
@@ -101,20 +106,24 @@ export interface NexusGenFieldTypes {
     startTime: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
+    allTasks: NexusGenRootTypes['Task'][] | null; // [Task!]
     user: NexusGenRootTypes['User'] | null; // User
   }
   Task: { // field return type
     byUserId: string; // String!
     completed: boolean; // Boolean!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
     createdBy: NexusGenRootTypes['User'] | null; // User
+    dueOn: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // String!
+    tags: string[] | null; // [String!]
     title: string; // String!
   }
   User: { // field return type
     email: string; // String!
     id: string; // String!
     password: string; // String!
-    tasks: Array<NexusGenRootTypes['Task'] | null> | null; // [Task]
+    pomoSessions: Array<Array<NexusGenRootTypes['PomodoroSession'] | null> | null> | null; // [[PomodoroSession]]
+    tasks: NexusGenRootTypes['Task'][] | null; // [Task!]
   }
 }
 
@@ -124,9 +133,12 @@ export interface NexusGenFieldTypeNames {
     user: 'User'
   }
   Mutation: { // field return type name
-    CreateNewTask: 'Task'
+    changeTaskTitle: 'Task'
+    createTask: 'Task'
+    markTaskDone: 'Task'
     signin: 'AuthPayload'
     signup: 'AuthPayload'
+    undoTask: 'Task'
   }
   PomodoroSession: { // field return type name
     actualDuration: 'Int'
@@ -137,27 +149,39 @@ export interface NexusGenFieldTypeNames {
     startTime: 'DateTime'
   }
   Query: { // field return type name
+    allTasks: 'Task'
     user: 'User'
   }
   Task: { // field return type name
     byUserId: 'String'
     completed: 'Boolean'
-    createdAt: 'DateTime'
     createdBy: 'User'
+    dueOn: 'DateTime'
+    id: 'String'
+    tags: 'String'
     title: 'String'
   }
   User: { // field return type name
     email: 'String'
     id: 'String'
     password: 'String'
+    pomoSessions: 'PomodoroSession'
     tasks: 'Task'
   }
 }
 
 export interface NexusGenArgTypes {
   Mutation: {
-    CreateNewTask: { // args
+    changeTaskTitle: { // args
+      newTitle: string; // String!
+      taskId: string; // String!
+    }
+    createTask: { // args
+      tags?: string[] | null; // [String!]
       title: string; // String!
+    }
+    markTaskDone: { // args
+      taskId: string; // String!
     }
     signin: { // args
       email: string; // String!
@@ -166,6 +190,9 @@ export interface NexusGenArgTypes {
     signup: { // args
       email: string; // String!
       password: string; // String!
+    }
+    undoTask: { // args
+      taskId: string; // String!
     }
   }
   Query: {

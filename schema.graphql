@@ -13,9 +13,12 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Mutation {
-  CreateNewTask(title: String!): [Task]
+  changeTaskTitle(newTitle: String!, taskId: String!): Task
+  createTask(tags: [String!], title: String!): Task
+  markTaskDone(taskId: String!): Task
   signin(email: String!, password: String!): AuthPayload
   signup(email: String!, password: String!): AuthPayload
+  undoTask(taskId: String!): Task
 }
 
 type PomodoroSession {
@@ -36,6 +39,7 @@ type PomodoroSession {
 }
 
 type Query {
+  allTasks: [Task!]
   user(userId: String!): User
 }
 
@@ -46,11 +50,17 @@ type Task {
   """True if the task has been completed"""
   completed: Boolean!
 
-  """When the task was created, in ISO format"""
-  createdAt: DateTime!
-
   """User that created the task"""
   createdBy: User
+
+  """When the task is due, in ISO format."""
+  dueOn: DateTime!
+
+  """ID of the task"""
+  id: String!
+
+  """Tags of the task"""
+  tags: [String!]
 
   """Text of the task"""
   title: String!
@@ -60,5 +70,6 @@ type User {
   email: String!
   id: String!
   password: String!
-  tasks: [Task]
+  pomoSessions: [[PomodoroSession]]
+  tasks: [Task!]
 }
