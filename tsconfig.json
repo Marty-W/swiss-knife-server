@@ -6,7 +6,7 @@
     "lib": ["ESNext"],
     "allowJs": true,
     "checkJs": false,
-    "strict": true,
+    "strict": false,
     "rootDir": "src",
     "outDir": "build",
     "esModuleInterop": true,
