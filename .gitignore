@@ -1,4 +1,4 @@
 node_modules
 migrations
 .env
-dist
+build

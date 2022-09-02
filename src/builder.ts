@@ -1,11 +1,11 @@
 import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
+import type PrismaTypes from '@pothos/plugin-prisma/generated'
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import ValidationPlugin from '@pothos/plugin-validation'
 import { DateTimeResolver } from 'graphql-scalars'
 import { prisma } from './db'
-import type PrismaTypes from './prisma/pothos-types'
 
 type Context = {
   userId: string | null

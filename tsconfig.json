@@ -16,6 +16,5 @@
     "noUnusedParameters": false,
     "strictNullChecks": true,
     "resolveJsonModule": true
-  },
-  "exclude": ["node_modules", "functions"]
+  }
 }
