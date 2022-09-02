@@ -16,6 +16,5 @@
     "noUnusedParameters": false,
     "strictNullChecks": true,
     "resolveJsonModule": true
-  },
-  "include": ["prisma/*.ts", "src/**/*.", "scripts/**/*"]
+  }
 }
