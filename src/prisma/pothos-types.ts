@@ -1,4 +1,4 @@
-import type { Prisma, Task, PomodoroSession, User } from "/Users/martin/code/swiss-knife/swiss-knife-server/node_modules/@prisma/client";
+import type { Prisma, Task, PomodoroSession, User } from "@prisma/client";
 export default interface PrismaTypes {
     Task: {
         Name: "Task";
