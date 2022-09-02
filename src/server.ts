@@ -1,7 +1,7 @@
 import { initContextCache } from '@pothos/core'
 import 'dotenv/config'
 
-import { ApolloServer } from 'apollo-server'
+import { ApolloServer } from 'apollo-server-lambda'
 import { Request } from 'express'
 import { decodeAuthHeader } from './utils/auth'
 
@@ -25,9 +25,11 @@ const server = new ApolloServer({
   },
 })
 
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`
-  🚀  Server is ready at ${url}
-  📭  Query at https://studio.apollographql.com/dev
-`)
-})
+// server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
+//   console.log(`
+//   🚀  Server is ready at ${url}
+//   📭  Query at https://studio.apollographql.com/dev
+// `)
+// })
+
+exports.handler = server.createHandler()
