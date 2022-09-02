@@ -1,15 +1,19 @@
-import * as jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken'
 
 export interface AuthTokenPayload {
-  userId: string
+  id: string
+  iat: number
+  exp: number
 }
 
-export const decodeAuthHeader = (authHeader: string): AuthTokenPayload => {
+export const decodeAuthHeader = (authHeader: string): string => {
   const token = authHeader.replace('Bearer ', '')
 
   if (!token) {
     throw new Error('No token found!')
   }
 
-  return jwt.verify(token, process.env.APP_SECRET!)
+  const { id } = jwt.verify(token, process.env.APP_SECRET!) as AuthTokenPayload
+
+  return id
 }

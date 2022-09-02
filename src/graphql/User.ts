@@ -1,48 +1,113 @@
-import { list, nonNull, objectType, queryField, stringArg } from "nexus"
+import bcrypt from 'bcrypt'
+import * as jwt from 'jsonwebtoken'
+import { builder } from '../builder'
+import { prisma } from '../db'
 
-export const User = objectType({
-  name: "User",
-  definition(t) {
-    t.nonNull.string("id")
-    t.nonNull.string("email")
-    t.nonNull.string("password")
-    t.list.nonNull.field("tasks", {
-      type: "Task",
-      async resolve({ id }, _, { prisma }) {
-        return await prisma.user
-          .findUnique({
-            where: {
-              id: id,
-            },
-          })
-          .tasks()
-      },
-    })
-    t.list.field("pomoSessions", {
-      type: list("PomodoroSession"),
-      async resolve({ id }, _, { prisma }) {
-        return await prisma.user
-          .findUnique({
-            where: {
-              id: id,
-            },
-          })
-          .pomodoroSessions()
-      },
-    })
-  },
+builder.prismaObject('User', {
+  fields: (t) => ({
+    id: t.exposeID('id', {
+      description: 'The id of the user',
+    }),
+    email: t.exposeString('email', {
+      description: 'The email of the user',
+    }),
+    allTasks: t.relation('tasks'),
+    allTaskCount: t.relationCount('tasks'),
+  }),
 })
 
-export const UserQuery = queryField("user", {
-  type: "User",
-  args: {
-    userId: nonNull(stringArg()),
-  },
-  resolve(_, { userId }, { prisma }) {
-    return prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    })
-  },
+builder.queryField('user', (t) =>
+  t.withAuth({ loggedIn: true }).prismaField({
+    type: 'User',
+    nullable: true,
+    resolve: async (query, _, args, { userId }) => {
+      return prisma.user.findUniqueOrThrow({
+        ...query,
+        where: {
+          id: userId,
+        },
+      })
+    },
+  })
+)
+
+const AuthInput = builder.inputType('AuthInput', {
+  fields: (t) => ({
+    email: t.string({ required: true }),
+    password: t.string({ required: true }),
+  }),
 })
+
+const AuthPayload = builder.simpleObject('AuthPayload', {
+  fields: (t) => ({
+    email: t.string(),
+    id: t.string(),
+    token: t.string(),
+  }),
+})
+
+builder.mutationFields((t) => ({
+  signUp: t.field({
+    type: AuthPayload,
+    args: {
+      input: t.arg({ type: AuthInput, required: true }),
+    },
+    resolve: async (_, { input }) => {
+      const { password, email } = input
+
+      const saltRounds = 5
+
+      const salt = await bcrypt.genSalt(saltRounds)
+      const hash = await bcrypt.hash(password, salt)
+
+      const user = await prisma.user.create({
+        data: {
+          email,
+          password: hash,
+        },
+      })
+      const token = jwt.sign({ id: user.id }, process.env.APP_SECRET!, {
+        expiresIn: '1y',
+      })
+
+      return {
+        ...user,
+        token,
+      }
+    },
+  }),
+  signIn: t.field({
+    type: AuthPayload,
+    args: {
+      input: t.arg({ type: AuthInput, required: true }),
+    },
+    resolve: async (_, { input }, ctx) => {
+      const { password, email } = input
+
+      const user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      })
+
+      if (!user) {
+        throw new Error('No such user found')
+      }
+
+      const valid = await bcrypt.compare(password, user.password)
+
+      if (!valid) {
+        throw new Error('Invalid credentials')
+      }
+
+      const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET!, {
+        expiresIn: '1y',
+      })
+
+      return {
+        ...user,
+        token,
+      }
+    },
+  }),
+}))

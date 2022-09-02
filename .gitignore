@@ -1,4 +1,8 @@
 node_modules
 migrations
-# Keep environment variables out of version control
+.serverless
+.webpack
 .env
+AWSCLIV2.pkg
+prisma/migrations
+.vercel

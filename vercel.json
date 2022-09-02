@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "./src/server.ts"
+    }
+  ],
+  "routes": [
+    {
+      "dest": "/",
+      "src": "/{.*}"
+    }
+  ],
+  "version": "1.0.0"
+}

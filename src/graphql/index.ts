@@ -1,5 +1,5 @@
-export * from './Pomo'
-export * from './Task'
-export * from './User'
-export * from './scalars'
-export * from './Auth'
+import { builder } from '../builder'
+import './Task'
+import './User'
+
+export const schema = builder.toSchema({})
