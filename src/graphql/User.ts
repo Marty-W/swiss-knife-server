@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'
+import { compare, genSalt, hash } from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import { builder } from '../builder'
 import { prisma } from '../db'
@@ -57,13 +57,13 @@ builder.mutationFields((t) => ({
 
       const saltRounds = 5
 
-      const salt = await bcrypt.genSalt(saltRounds)
-      const hash = await bcrypt.hash(password, salt)
+      const salt = await genSalt(saltRounds)
+      const hashPass = await hash(password, salt)
 
       const user = await prisma.user.create({
         data: {
           email,
-          password: hash,
+          password: hashPass,
         },
       })
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET!, {
@@ -94,7 +94,7 @@ builder.mutationFields((t) => ({
         throw new Error('No such user found')
       }
 
-      const valid = await bcrypt.compare(password, user.password)
+      const valid = await compare(password, user.password)
 
       if (!valid) {
         throw new Error('Invalid credentials')
