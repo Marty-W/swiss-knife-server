@@ -1,19 +1,19 @@
 import 'dotenv/config'
 
-import { ApolloServer } from 'apollo-server'
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core'
+import { ApolloServer } from 'apollo-server-lambda'
 import { decodeAuthHeader } from './utils/auth'
 
-import { Request } from 'express'
 import { schema } from './graphql/index'
 
 const server = new ApolloServer({
   schema,
   csrfPrevention: true,
   cache: 'bounded',
-  introspection: true,
-  context: ({ req }: { req: Request }) => {
-    const { authorization } = req.headers
+  context: ({ event, context, express }) => {
+    context.callbackWaitsForEmptyEventLoop = false
+
+    const { authorization } = express.req.headers
 
     const userId = authorization ? decodeAuthHeader(authorization) : null
 
@@ -21,10 +21,7 @@ const server = new ApolloServer({
       userId,
     }
   },
+  plugins: [ApolloServerPluginLandingPageLocalDefault()],
 })
 
-const port = 4000
-
-server.listen({ port }).then(({ url }) => {
-  console.log(`🌍 Server ready at ${url}`)
-})
+exports.graphqlHandler = server.createHandler()
