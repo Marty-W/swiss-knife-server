@@ -10,6 +10,7 @@ const server = new ApolloServer({
   schema,
   csrfPrevention: true,
   cache: 'bounded',
+  introspection: false,
   context: ({ context, express }) => {
     context.callbackWaitsForEmptyEventLoop = false
 

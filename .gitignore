@@ -3,3 +3,4 @@ migrations
 .env
 .build
 .serverless
+.yarn-error.log
