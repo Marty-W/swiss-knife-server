@@ -1,10 +1,9 @@
-import { initContextCache } from '@pothos/core'
 import 'dotenv/config'
 
 import { ApolloServer } from 'apollo-server'
-import { Request } from 'express'
 import { decodeAuthHeader } from './utils/auth'
 
+import { Request } from 'express'
 import { schema } from './graphql/index'
 
 const server = new ApolloServer({
@@ -13,13 +12,11 @@ const server = new ApolloServer({
   cache: 'bounded',
   introspection: true,
   context: ({ req }: { req: Request }) => {
-    const userId =
-      req && req.headers.authorization
-        ? decodeAuthHeader(req.headers.authorization)
-        : undefined
+    const { authorization } = req.headers
+
+    const userId = authorization ? decodeAuthHeader(authorization) : null
 
     return {
-      ...initContextCache(),
       userId,
     }
   },

@@ -66,6 +66,7 @@ builder.mutationFields((t) => ({
           password: hashPass,
         },
       })
+
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET!, {
         expiresIn: '1y',
       })
@@ -81,7 +82,7 @@ builder.mutationFields((t) => ({
     args: {
       input: t.arg({ type: AuthInput, required: true }),
     },
-    resolve: async (_, { input }, ctx) => {
+    resolve: async (_, { input }) => {
       const { password, email } = input
 
       const user = await prisma.user.findUnique({

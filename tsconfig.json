@@ -7,7 +7,7 @@
     "allowJs": true,
     "checkJs": false,
     "strict": true,
-    "rootDir": "src",
+    "rootDir": "",
     "outDir": "build",
     "esModuleInterop": true,
     "strictNullChecks": true,

@@ -1,0 +1,30 @@
+org: lebeda28
+app: swiss-knife-server
+# serverless.yml
+
+service: swiss-knife-server
+useDotenv: true
+plugins:
+  - serverless-plugin-typescript
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-central-1
+functions:
+  graphql:
+    handler: src/lambda.graphqlHandler
+    events:
+      - http:
+          path: /graphql
+          method: post
+          cors: true
+      - http:
+          path: /graphql
+          method: get
+          cors: true
+package:
+  patterns:
+    # - '!node_modules/.prisma/client/libquery_engine-*'
+    # - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
