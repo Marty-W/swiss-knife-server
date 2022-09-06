@@ -1,6 +1,5 @@
 node_modules
 migrations
 .env
-build
-.vercel
-graphql.js
+.build
+.serverless
