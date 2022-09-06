@@ -1,5 +1,6 @@
 node_modules
 migrations
 .env
-build
+.build
 .serverless
+.yarn-error.log
