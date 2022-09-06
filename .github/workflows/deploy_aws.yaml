@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
-      - run: yarn run generate
+      - run: npx prisma generate
       - name: serverless deploy
         uses: serverless/github-action@v3.1
         with:
