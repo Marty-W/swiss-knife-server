@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: Deploy to AWS prod stage
 
 on:
   push:
@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: yarn
+      - run: eslint . --ext .ts
       - run: npx prisma generate
       - name: serverless deploy
         uses: serverless/github-action@v3.1
