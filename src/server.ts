@@ -1,7 +1,6 @@
 import 'dotenv/config'
 
 import { ApolloServer } from 'apollo-server'
-import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core'
 import { decodeAuthHeader } from './utils/auth'
 
 import { Request } from 'express'

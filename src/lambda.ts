@@ -10,7 +10,7 @@ const server = new ApolloServer({
   schema,
   csrfPrevention: true,
   cache: 'bounded',
-  context: ({ event, context, express }) => {
+  context: ({ context, express }) => {
     context.callbackWaitsForEmptyEventLoop = false
 
     const { authorization } = express.req.headers
